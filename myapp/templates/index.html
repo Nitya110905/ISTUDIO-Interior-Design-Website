@@ -1,6 +1,18 @@
-{% extends "header.html" %}
+{% extends "common.html" %}
 {% load static %}
 {% block content %}
+
+{% comment %} <!-- In Django, {% block content %} and {% endblock %} are the keys to Template Inheritance. -->
+
+<!-- The {% extends %} tag must be at the very top because of how Django’s template engine "compiles" your HTML. -->
+
+<!-- Just because you imported a library in one Python file doesn't mean it’s automatically available in a second file you’ve connected to it.
+
+You must "import" (load) the static toolset into every specific file that needs to use the {% load static %} tag -->
+
+<!-- The compiler scans parent.html line by line. Every time it sees a {% block NAME %}, it marks that spot in its memory as a "Variable Slot."
+
+It says: "I have a slot here called 'content'. If the child file gives me something for 'content', I will put it here. If not, I'll use whatever (if anything) is inside the block in this parent file." --> {% endcomment %}
 
 
     <!-- Hero Start -->
