@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import User
 
 # Create your views here.
 
@@ -26,8 +27,30 @@ def team(request):
 def testimonial(request):
     return render(request,'testimonial.html')
 
-def error(request):
-    return render(request,'404.html')
-
 def SignUp(request):
-    return render(request,'Sign-Up.html')
+    if request.method == "POST":
+        try:
+            user = User.objects.get(email=request.POST['email'])
+            msg = "User already exists!!"
+            return render(request,'Sign-Up.html',{'msg':msg})
+        except User.DoesNotExist:
+            if request.POST['password'] == request.POST['cpassword']:
+                User.objects.create(
+                    name = request.POST['name'],
+                    email = request.POST['email'],
+                    password = request.POST['password'],
+                    contact = request.POST['contact']
+                )
+                msg = "Sign-Up Successfull !!!"
+                return render (request,'Login.html',{'msg':msg})
+            else:
+                msg = "Password and Confirm Password does not match !!!"
+                return render (request,'Sign-Up.html',{'msg':msg})
+    else:
+        return render (request,'Sign-Up.html')
+    
+
+def Login(request):
+    return render(request,'Login.html')
+            
+
