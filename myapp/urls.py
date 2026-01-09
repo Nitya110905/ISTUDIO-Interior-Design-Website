@@ -31,4 +31,6 @@ urlpatterns = [
     path('login/', views.login, name = 'login'),
     path('fpass/', views.fpass, name = 'fpass'),
     path('otp/', views.otp, name = 'otp'),
+    path('logout/', views.logout, name='logout'),
+    path('newpass/', views.newpass, name='newpass'),
 ]
