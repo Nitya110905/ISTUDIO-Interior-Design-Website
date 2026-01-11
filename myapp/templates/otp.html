@@ -39,13 +39,14 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <input type="tel" maxlength="6" class="form-control" id="otp" name="uotp" placeholder="Your OTP">
+                                        <input type="tel" maxlength="6" class="form-control" id="otp" name="uotp" placeholder="Your OTP" required>
                                         <label for="email">Your OTP</label>
                                     </div>
                                 </div>
-                                <div style="height: 20px; width: 152px;"><a  href="">Resend OTP !</a></div>
+                                <div>OTP expires in: <span id="timer">1:00</span></div>
+                                <a href="{% url 'resend_otp' %}" id="resend-link" style="display:none;">Resend OTP</a>
                                 <div class="col-12">
-                                    <button class="btn btn-primary w-100 py-3" type="submit">Submit OTP</button>
+                                    <button class="btn btn-primary w-100 py-3" id="submit-btn" type="submit">Verify OTP</button>
                                 </div>
                             </div>
                         </form>
@@ -80,6 +81,32 @@
         </div>
     </div>
     <!-- Newsletter End -->
+
+    <script>
+        // Start the timer with the value passed from Django
+        let timeLeft = parseInt("{{ seconds_left|default:0 }}"); 
+
+        let timerElement = document.getElementById('timer');
+        let resendLink = document.getElementById('resend-link');
+        let submitBtn = document.getElementById('submit-btn'); // Add an ID to your submit button
+
+        let countdown = setInterval(function() {
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerElement.innerHTML = "0:00 (Expired)";
+                resendLink.style.display = "block"; 
+                submitBtn.disabled = true; // Stop user from submitting an expired OTP
+                return;
+            }
+
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            timerElement.innerHTML = minutes + ":" + seconds;
+            timeLeft--;
+        }, 1000);
+    </script>
 
 
     <!-- Footer Start -->
