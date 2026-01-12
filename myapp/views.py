@@ -73,6 +73,7 @@ def login(request):
 
 def logout(request):
     del request.session['email']
+    messages.success(request,"Logout Successful !")
     return redirect('login')
 
 def fpass(request):
@@ -163,13 +164,36 @@ def resend_otp(request):
         messages.error(request, "Session expired. Please enter your email again !")
         return redirect('fpass')
 
-def femail(request):
-    return render(request,'forgot-email.html')
-
 def newpass(request):
     if 'resetpass_email' not in request.session:
-        messages.error(request, "Please enter your email first !")
+        messages.error(request, "Please enter your email first!")
         return redirect('fpass')
+    
+    if request.method == "POST":
+        np = request.POST.get('npass')
+        cnp = request.POST.get('cnpass')
+        
+        if np == cnp:
+            try:
+                user = User.objects.get(email=request.session['resetpass_email'])
+                user.password = np  
+                user.save()
+
+                request.session.flush() 
+                
+                messages.success(request, "Password reset successful! Please login.")
+                return redirect('login')
+                
+            except User.DoesNotExist:
+                messages.error(request, "User not found. Please try again.")
+                return redirect('fpass')
+        else:
+            messages.error(request, "Passwords do not match!")
+            return render(request, 'new-password.html')
+
+    return render(request, 'new-password.html')
+            
+
     
             
 
